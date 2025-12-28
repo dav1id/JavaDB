@@ -45,18 +45,14 @@ enum Statement{ // Can soon implement methods into statement maybe
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        inputBuffer<Integer, String> input_buffer = new inputBuffer<>(
-            0, 0, new ArrayDeque<>()
-        );
-        Scanner inputScanner = null;
+        inputBuffer<Integer, String> input_buffer = new inputBuffer<>(0, 0);
 
-        // Creating the table referenece
+        Scanner inputScanner = null;
         Table table = null;
 
         try {
             // Generating scanner for user input, commands that are translated to statements
             inputScanner = new Scanner(System.in);
-            String c = inputScanner.nextLine();
 
             /* Creating table, and checking if the table is found (for now, we will pre-set the name to Table 1).
                If it is found then we will deserialize the table, if it's not we will have to create the pages.
@@ -68,12 +64,13 @@ public class Main {
             if (table.getTableFile()){
                 vm.deserialize_pages(table);
             } else {
-                table.createPages();
-                if (!new File(table.tableName).mkdir()) throw new IOException(); // Creating the file here
+                if (!table.createPages())
+                    throw new IOException();
 
                 vm.serialize_pages(table); // Can call serialize_pages just to save the pages onto the table
             }
 
+            String c = "";
             while (!c.equals(".exit")){
                 c = inputScanner.nextLine();
                 Statement statementSelect = Tokenizer.prepareStatement(c); // can create custom exception based on statement

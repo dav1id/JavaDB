@@ -84,16 +84,11 @@ class Table {
         return true;
     }
 
-    public void createPages() throws IOException {
+    public boolean createPages() throws IOException {
         for (int i = 0; i < TABLE_SIZE; ++i)
             table.add(new Page());
 
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(tableName + "/meta.txt");
-        } finally {
-            if (fileWriter != null) fileWriter.close();
-        }
+        return new File(tableName).mkdir();
     }
 
 }
@@ -126,18 +121,18 @@ class vm {
         ObjectOutputStream objOutputStream = null;
         ArrayList<Page> arrayTable = table.getTable();
 
-        for (int i = 0; i < arrayTable.size(); ++i){
-            try {
+        try {
+            for (int i = 0; i < arrayTable.size(); ++i){
                 fileOutputStream = new FileOutputStream(table.tableName + "/" + i);
                 objOutputStream = new ObjectOutputStream(fileOutputStream);
 
                 Page page = arrayTable.get(i);
                 objOutputStream.writeObject(page);
-
-            } finally{
-                if (fileOutputStream != null) fileOutputStream.close();
-                if (objOutputStream != null) objOutputStream.close();
             }
+
+        } finally{
+            if (fileOutputStream != null) fileOutputStream.close();
+            if (objOutputStream != null) objOutputStream.close();
         }
     }
 
@@ -164,15 +159,19 @@ class vm {
         }
     }
 
-
-
     /**
      Possible implementation of a way to serialize individual pages (maybe an auto-save feature paired with an
      internal clock, to see how long the program has been running for? But we can trust that the finally will
      always serialize the page in main
      **/
 
-    static void serialize_page(ArrayList<Page> table){
-        // Call serialize_page at the end of main try and call (in finally to close/destroy the table)
+    static void deserialize_page(){
+
     }
 }
+
+
+
+
+
+

@@ -3,12 +3,14 @@
  @returns Statement identifier
 
  **/
+
+// Need to seperate statement id user email
 class Tokenizer {
      static Statement prepareStatement(String token) {
          String lexeme = token.substring(0);
 
          for (Statement identifier : Statement.values()) {
-             if (token.equals(identifier.toString())) {
+             if (lexeme.equals(identifier.toString())) {
                  return identifier;
              }
          }

@@ -23,12 +23,12 @@ interface Buffer <K>{
 class inputBuffer <T extends Number, K> implements Buffer<K>{
     private T buffer_length;
     private T input_length;
-    private ArrayDeque<K> buffer;
+    private final ArrayDeque<K> buffer;
 
-    public inputBuffer(T buffer_length, T input_length, ArrayDeque<K> buffer){
+    public inputBuffer(T buffer_length, T input_length){
         this.buffer_length = buffer_length;
         this.input_length = input_length;
-        this.buffer = buffer;
+        buffer = new ArrayDeque<>();
     }
 
     public bufferState returnBufferStatus(){
