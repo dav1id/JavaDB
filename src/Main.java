@@ -11,10 +11,7 @@
                             2. Parser - Will take the statement, and then execute it
 */
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 enum Statement{ // Can soon implement methods into statement maybe
@@ -39,8 +36,13 @@ enum Statement{ // Can soon implement methods into statement maybe
     void printStatement(){
         System.out.println(this);
     }
-
     public abstract String toString();
+
+}
+
+enum ExecuteResult{
+    EXECUTE_SUCESS,
+    EXECUTE_FAILURE;
 }
 
 public class Main {
@@ -62,12 +64,12 @@ public class Main {
 
             table = new Table("Table1");
             if (table.getTableFile()){
-                vm.deserialize_pages(table);
+                Pager.deserialize_pages(table);
             } else {
                 if (!table.createPages())
                     throw new IOException();
 
-                vm.serialize_pages(table); // Can call serialize_pages just to save the pages onto the table
+                Pager.serialize_pages(table); // Can call serialize_pages just to save the pages onto the table
             }
 
             String c = "";
@@ -83,7 +85,7 @@ public class Main {
             if (inputScanner != null)
                 inputScanner.close();
             if (table != null)
-                vm.serialize_pages(table);
+                Pager.serialize_pages(table);
         }
     }
 }

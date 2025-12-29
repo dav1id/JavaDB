@@ -28,24 +28,30 @@ import static java.lang.Math.floor;
 
 class Row {
     public String username; public String email;
-    public short id;
+    public Integer id;
+    public Integer page;
 
-    public Row(String username, String email, short id){
+    public Row(Integer id, String username, String email) throws IOException {
         this.username = username;
         this.email = email;
         this.id = id;
+
+        page = (int) floor(id / 10);
+
+        if (page > Table.TABLE_SIZE)
+            throw new IOException(); // create a unique exception here too
     }
 }
 
-class Page implements Serializable { // Need a way to remove the index from the row, and then save it in my hashmap as index, (username, email)
-    private final HashMap<Short, Row> rows;// 10 rows
+class Page implements Serializable {
+    private final HashMap<Integer, Row> rows;// 10 rows
 
     public Page(){
         rows = new HashMap<>();
     }
 
-    public Row getRowContents(Row row){
-        return rows.get(row.id);
+    public Row getRowContents(Integer id){
+        return rows.get(id);
     }
 
     public void setRowContents(Row row){
@@ -58,16 +64,16 @@ class Table {
     static public final Integer ROW_SIZE = 3; // id, username, and the email
     static public final Integer PAGE_SIZE = 10; // 10 rows
 
-    private final ArrayList<Page> table;
+    private final ArrayList<Page> pagesTable;
     public String tableName;
 
     public Table(String tableName){
         this.tableName = tableName;
-        table = new ArrayList<>();
+        pagesTable = new ArrayList<>();
     }
 
     public ArrayList<Page> getTable(){
-        return table;
+        return pagesTable;
     }
 
     public boolean getTableFile() throws IOException {
@@ -86,87 +92,30 @@ class Table {
 
     public boolean createPages() throws IOException {
         for (int i = 0; i < TABLE_SIZE; ++i)
-            table.add(new Page());
+            pagesTable.add(new Page());
 
         return new File(tableName).mkdir();
     }
-
 }
 
 class vm {
-    /**
-        Saves the row to a spcific page depending on the rows id. Each page has 10 rows, so math.float(id/10) will
-        give us the page that we should store the row in. Serializing a row will be called on insert, and other methods
-        that change the composition of the row
-     **/
+    static void execute_insert(Row row, Table table){
+        Integer pageForRow = row.page;
+        ArrayList<Page> pagesTable = table.getTable();
+        Page page = pagesTable.get(pageForRow);
 
-    static void serialize_row(Row row, Table table){
-        short idxInTable = (short)(floor(row.id / 10));
-        Page page = table.getTable().get(idxInTable);
         page.setRowContents(row);
     }
 
-    static Row deserialize_row(Row row, Table table){
-        short idxInTable = (short)(floor(row.id / 10));
-        Page page = table.getTable().get(idxInTable);
-        return page.getRowContents(row);
-    }
+    static Row execute_select(Integer id, Table table) throws Exception{ // Assuming that
+        Integer pageForRow = (int) floor(id/10);
+        ArrayList<Page> pagesTable = table.getTable();
 
-    /**
-        Serializes all the pages into the table at the end of the program execution
-     **/
+        if (pageForRow > table.TABLE_SIZE)
+            throw new Exception();
 
-    static void serialize_pages(Table table) throws IOException {
-        FileOutputStream fileOutputStream = null;
-        ObjectOutputStream objOutputStream = null;
-        ArrayList<Page> arrayTable = table.getTable();
-
-        try {
-            for (int i = 0; i < arrayTable.size(); ++i){
-                fileOutputStream = new FileOutputStream(table.tableName + "/" + i);
-                objOutputStream = new ObjectOutputStream(fileOutputStream);
-
-                Page page = arrayTable.get(i);
-                objOutputStream.writeObject(page);
-            }
-
-        } finally{
-            if (fileOutputStream != null) fileOutputStream.close();
-            if (objOutputStream != null) objOutputStream.close();
-        }
-    }
-
-    /**
-     Deserializes the pages at the beginning of the program
-     **/
-
-    static void deserialize_pages(Table table) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = null;
-        ObjectInputStream objInputStream = null;
-        ArrayList<Page> arrayTable = table.getTable();
-
-        for (int i = 0; i < table.TABLE_SIZE; ++i){
-            try {
-                fileInputStream = new FileInputStream(table.tableName + "/" + i);
-                objInputStream = new ObjectInputStream(fileInputStream);
-
-                Page page = (Page) objInputStream.readObject();
-                arrayTable.add(page);
-            } finally {
-                if (fileInputStream != null) fileInputStream.close();
-                if (objInputStream != null) objInputStream.close();
-            }
-        }
-    }
-
-    /**
-     Possible implementation of a way to serialize individual pages (maybe an auto-save feature paired with an
-     internal clock, to see how long the program has been running for? But we can trust that the finally will
-     always serialize the page in main
-     **/
-
-    static void deserialize_page(){
-
+        Page page = pagesTable.get(pageForRow);
+        return page.getRowContents(id);
     }
 }
 
