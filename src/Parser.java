@@ -1,13 +1,16 @@
 class Parser {
-     static void executeStatement(Statement statement){
+     static void executeStatement(Table table, Statement statement, String token){
+
+
         switch(statement){
             case INSERT_STATEMENT:
-                System.out.println("Insert statement goes here");
+                Row row = Tokenizer.prepareRowInsertStatement(token);
+                vm.executeInsert(row, table);
                 break;
 
             case SELECT_STATEMENT:
-                System.out.println("Select statement goes here");
+             //   vm.execute_select(row, table);
                 break;
         }
-    };
+    }
 }

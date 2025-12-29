@@ -40,11 +40,6 @@ enum Statement{ // Can soon implement methods into statement maybe
 
 }
 
-enum ExecuteResult{
-    EXECUTE_SUCESS,
-    EXECUTE_FAILURE;
-}
-
 public class Main {
     public static void main(String[] args) throws Exception {
         inputBuffer<Integer, String> input_buffer = new inputBuffer<>(0, 0);
@@ -76,7 +71,7 @@ public class Main {
             while (!c.equals(".exit")){
                 c = inputScanner.nextLine();
                 Statement statementSelect = Tokenizer.prepareStatement(c); // can create custom exception based on statement
-                Parser.executeStatement(statementSelect);
+                Parser.executeStatement(table, statementSelect, c);
 
                 input_buffer.setBufferInput(c);
             }

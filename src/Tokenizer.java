@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -8,11 +9,20 @@ import java.util.Scanner;
  **/
 
 class Tokenizer {
-     static Statement prepareStatement(String token) {
-         String lexeme = token.substring(0);
+
+    private static String[] createRegex(String token){
+        String[] splitList = token.split(" ");
+        String lexeme = splitList[0].substring(1);
+        splitList[0] = lexeme;
+
+        return splitList;
+
+    }
+     public static Statement prepareStatement(String token) {
+         String[] splitList = createRegex(token);
 
          for (Statement identifier : Statement.values()) {
-             if (lexeme.equals(identifier.toString())) {
+             if (splitList[0].equals(identifier.toString())) {
                  return identifier;
              }
          }
@@ -20,29 +30,19 @@ class Tokenizer {
          return Statement.FAILURE_STATEMENT;
      }
 
-     static Row prepareRowStatement(String token) throws IOException {
-         String lexeme = token.substring(0);
-         Scanner scanner = null;
+     public static Row prepareRowInsertStatement(String token) {
+         String[] splitList = createRegex(token);
+         Row row = null;
 
          try {
-              scanner = new Scanner(lexeme);
-              scanner.useDelimiter(" ");
+             if (splitList.length > 4)
+                 throw new ArrayIndexOutOfBoundsException();
 
-              Integer id = -1; String username = ""; String email = "";
-              Row row = new Row(id, username, email);
-
-              for (int i = 0; i < 3; ++i)
-                  if (i == 1) {
-                      id = Integer.valueOf(scanner.next());
-                  } else if (i == 2){
-                      username = scanner.next();
-                  } else {
-                      email = scanner.next();
-                  }
-              return row;
-
-         } finally{
-             if (scanner != null) scanner.close();
+             row = new Row(Integer.valueOf(splitList[1]), splitList[2], splitList[3]);
+         } catch (ArrayIndexOutOfBoundsException | IOException e){
+             System.out.println(e.getMessage());
          }
+
+         return row;
      }
 }
