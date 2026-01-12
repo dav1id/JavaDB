@@ -32,7 +32,7 @@ class Pager {
      Deserializes the pages at the beginning of the program
      **/
 
-    static void deserialize_pages(Table table) throws IOException, ClassNotFoundException {
+    static void deserialize_pages(Table table) throws IOException{
         FileInputStream fileInputStream = null;
         ObjectInputStream objInputStream = null;
         ArrayList<Page> arrayTable = table.getTable();
@@ -44,6 +44,9 @@ class Pager {
 
                 Page page = (Page) objInputStream.readObject();
                 arrayTable.add(page);
+            } catch (ClassNotFoundException e){
+                System.out.println(e.getCause());
+
             } finally {
                 if (fileInputStream != null) fileInputStream.close();
                 if (objInputStream != null) objInputStream.close();

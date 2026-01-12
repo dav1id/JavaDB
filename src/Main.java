@@ -61,15 +61,20 @@ public class Main {
             if (table.getTableFile()){
                 Pager.deserialize_pages(table);
             } else {
-                if (!table.createPages())
+                if (!table.createTable())
                     throw new IOException();
 
+                table.createMetaText(); // Need to create meta text here, and can specify late
                 Pager.serialize_pages(table); // Can call serialize_pages just to save the pages onto the table
             }
 
-            String c = "";
-            while (!c.equals(".exit")){
+            String c;
+            while (true){
                 c = inputScanner.nextLine();
+
+                if (c.equals(".exit"))
+                    break;
+
                 Statement statementSelect = Tokenizer.prepareStatement(c); // can create custom exception based on statement
                 Parser.executeStatement(table, statementSelect, c);
 
