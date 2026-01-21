@@ -1,13 +1,4 @@
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Scanner;
-
-/**
- Loops through all available statements, and checks to see if the statement you have aligns with any of them
- @returns Statement identifier
-
- **/
+import DatabaseExceptions.InvalidStatementException;
 
 class Tokenizer {
      public static Statement prepareStatement(String token) throws InvalidStatementException {
@@ -36,7 +27,7 @@ class Tokenizer {
                  throw new ArrayIndexOutOfBoundsException();
 
              row = new Row(Integer.valueOf(splitList[1]), splitList[2], splitList[3]);
-         } catch (ArrayIndexOutOfBoundsException | IOException | NumberFormatException e){
+         } catch (ArrayIndexOutOfBoundsException | NumberFormatException e){
              throw new InvalidStatementException();
          }
 

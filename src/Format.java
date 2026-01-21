@@ -1,15 +1,17 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import DatabaseExceptions.InvalidStatementException;
 
 import static java.lang.Math.floor;
 
-class Row {
-    public String username; public String email;
+class Row implements Serializable {
+    public String username;
+    public String email;
     public Integer id;
     public Integer page;
 
-    public Row(Integer id, String username, String email) throws IOException {
+    public Row(Integer id, String username, String email)  throws InvalidStatementException {
         this.username = username;
         this.email = email;
         this.id = id;
@@ -17,7 +19,7 @@ class Row {
         page = (int) floor(id / 10);
 
         if (page > Table.TABLE_SIZE)
-            throw new IOException(); // create a unique exception here too
+            throw new InvalidStatementException(); // create a unique exception here too
     }
 }
 
@@ -86,7 +88,7 @@ class Table {
     /**
         Makes the directory along with the number of pages set by the table
      **/
-    public boolean createTable() throws IOException {
+    public boolean createTable() {
         for (int i = 0; i < TABLE_SIZE; ++i)
             pagesTable.add(new Page());
 

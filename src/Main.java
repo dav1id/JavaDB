@@ -11,6 +11,8 @@
                             2. Parser - Will take the statement, and then execute it
 */
 
+import DatabaseExceptions.InvalidStatementException;
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -72,8 +74,10 @@ public class Main {
             while (true){
                 c = inputScanner.nextLine();
 
-                if (c.equals(".exit"))
+                if (c.equals(".exit")) {
+             //       Pager.serialize_pages(table);
                     break;
+                }
 
                 try {
                     Statement statementSelect = Tokenizer.prepareStatement(c); // can create custom exception based on statement
