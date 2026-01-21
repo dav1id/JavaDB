@@ -75,12 +75,17 @@ public class Main {
                 if (c.equals(".exit"))
                     break;
 
-                Statement statementSelect = Tokenizer.prepareStatement(c); // can create custom exception based on statement
-                Parser.executeStatement(table, statementSelect, c);
+                try {
+                    Statement statementSelect = Tokenizer.prepareStatement(c); // can create custom exception based on statement
+                    Parser.executeStatement(table, statementSelect, c);
+                    input_buffer.setBufferInput(c);
 
-                input_buffer.setBufferInput(c);
+                } catch (InvalidStatementException e){
+                    System.out.println(String.format("Invalid Statement: %s", c));
+                }
             }
-            System.out.println("Exited out of database");
+
+            System.out.println(String.format("Exited out of database"));
         } finally {
             if (inputScanner != null)
                 inputScanner.close();

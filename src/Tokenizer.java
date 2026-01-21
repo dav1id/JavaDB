@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,29 +10,25 @@ import java.util.Scanner;
  **/
 
 class Tokenizer {
+     public static Statement prepareStatement(String token) throws InvalidStatementException {
+         String[] splitList = token.split(" ");
+         String removedLexeme = splitList[0].substring(1);
 
-    private static String[] createRegex(String token){
-        String[] splitList = token.split(" ");
-        String lexeme = splitList[0].substring(1);
-        splitList[0] = lexeme;
+         char[] charList = new char[splitList[0].length()];
+         splitList[0].getChars(0, splitList[0].length(), charList, 0);
 
-        return splitList;
-
-    }
-     public static Statement prepareStatement(String token) {
-         String[] splitList = createRegex(token);
-
-         for (Statement identifier : Statement.values()) {
-             if (splitList[0].equals(identifier.toString())) {
-                 return identifier;
+        if (charList[0] == '.')
+             for (Statement identifier : Statement.values()) {
+                 if (removedLexeme.equals(identifier.toString())) {
+                     return identifier;
+                 }
              }
-         }
 
-         return Statement.FAILURE_STATEMENT;
+        throw new InvalidStatementException();
      }
 
-     public static Row prepareRowInsertStatement(String token) {
-         String[] splitList = createRegex(token);
+     public static Row prepareRowInsertStatement(String token) throws InvalidStatementException {
+         String[] splitList = token.split(" ");
          Row row = null;
 
          try {
@@ -39,8 +36,8 @@ class Tokenizer {
                  throw new ArrayIndexOutOfBoundsException();
 
              row = new Row(Integer.valueOf(splitList[1]), splitList[2], splitList[3]);
-         } catch (ArrayIndexOutOfBoundsException | IOException e){
-             System.out.println(e.getMessage());
+         } catch (ArrayIndexOutOfBoundsException | IOException | NumberFormatException e){
+             throw new InvalidStatementException();
          }
 
          return row;
