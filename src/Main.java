@@ -1,22 +1,11 @@
-/*
-            - Need to create a unique exception for invalid commands
-
-            Interface -> SQL Command Processor -> Virtual Machine (Be where the data is going to be stored -> Simulating cloud)
-                          |
-                          -> Tokenizer -> Parser -> Code Generator -> Back to SQL Command Processor
-
-                            1. Tokenizer - Tokenizer is going to use another switch to go through the list of items and
-                            then return a statement that is eventually going to be executed
-
-                            2. Parser - Will take the statement, and then execute it
-*/
-
 import DatabaseExceptions.InvalidStatementException;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-enum Statement{ // Can soon implement methods into statement maybe
+import Format.Table;
+
+enum Statement{
     INSERT_STATEMENT {
         public String toString(){
             return "insert";
@@ -35,9 +24,6 @@ enum Statement{ // Can soon implement methods into statement maybe
         }
     };
 
-    void printStatement(){
-        System.out.println(this);
-    }
     public abstract String toString();
 
 }
@@ -50,12 +36,11 @@ public class Main {
         Table table = null;
 
         try {
-            // Generating scanner for user input, commands that are translated to statements
             inputScanner = new Scanner(System.in);
 
             /* Creating table, and checking if the table is found (for now, we will pre-set the name to Table 1).
                If it is found then we will deserialize the table, if it's not we will have to create the pages.
-               Checks if the table is found by checking if theres a text file called meta, if it returns an exception
+               Checks if the table is found by checking if there's a text file called meta, if it returns an exception
                then the table does not exist.
             */
 
@@ -80,7 +65,7 @@ public class Main {
                 }
 
                 try {
-                    Statement statementSelect = Tokenizer.prepareStatement(c); // can create custom exception based on statement
+                    Statement statementSelect = Tokenizer.prepareStatement(c);
                     Parser.executeStatement(table, statementSelect, c);
                     input_buffer.setBufferInput(c);
 

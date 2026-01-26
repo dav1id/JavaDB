@@ -1,6 +1,9 @@
 import java.io.*;
 import java.util.ArrayList;
 
+import Format.Table;
+import Format.Page;
+
 class Pager {
     /**
      Saves the row to a specific page depending on the rows id. Each page has 10 rows, so math.float(id/10) will

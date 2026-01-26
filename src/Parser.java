@@ -1,5 +1,9 @@
 import DatabaseExceptions.InvalidStatementException;
 
+import Format.Table;
+import Format.Row;
+
+
 class Parser {
      static void executeStatement(Table table, Statement statement, String token) throws InvalidStatementException {
         switch(statement){
@@ -9,7 +13,8 @@ class Parser {
                 break;
 
             case SELECT_STATEMENT:
-             //   vm.execute_select(row, table);
+                Row selectedRow = vm.executeSelect(token, table);
+                System.out.println(selectedRow);
                 break;
         }
     }

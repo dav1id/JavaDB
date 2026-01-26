@@ -1,3 +1,43 @@
+import DatabaseExceptions.InvalidStatementException;
+
+import Format.Page;
+import Format.Row;
+import Format.Table;
+
+import java.io.*;
+import java.util.ArrayList;
+
+class vm {
+
+    /**
+     Handles inserting a row into a table by setting the contents of the row by calling the pages method.
+
+     @param row Simple dataset of id, email, and username
+     @param table Collection of Pages
+     */
+
+    static void executeInsert(Row row, Table table){
+        Integer pageForRow = row.page;
+        ArrayList<Page> pagesTable = table.getTable();
+        Page page = pagesTable.get(pageForRow);
+
+        page.setRowContents(row);
+    }
+
+    /**
+        Simple selection by id, returns the row
+
+        @param token Entire string, including the
+        @param table Collection of pages
+        @return Row Simple dataset of id, email, and username
+     **/
+
+    static <T> Row executeSelect(String token, Table table) throws InvalidStatementException {
+        Row row = new Row(null, null, null);
+        return row;
+    }
+}
+
 /*
 Serialization using objectoutputstream, objectinputstream
 
@@ -19,35 +59,3 @@ from a page, by deserializing the page, and then doing math.floor(row_id/10) - 1
 
 Add row is going to add a row by modulus 3 (I will have 3 pages)
 */
-
-import java.io.*;
-import java.util.ArrayList;
-
-import static java.lang.Math.floor;
-
-class vm {
-    static void executeInsert(Row row, Table table){
-        Integer pageForRow = row.page;
-        ArrayList<Page> pagesTable = table.getTable();
-        Page page = pagesTable.get(pageForRow);
-
-        page.setRowContents(row);
-    }
-
-    static Row executeSelect(Integer id, Table table) throws Exception{ // Assuming that
-        Integer pageForRow = (int) floor(id/10);
-        ArrayList<Page> pagesTable = table.getTable();
-
-        if (pageForRow > table.TABLE_SIZE)
-            throw new Exception();
-
-        Page page = pagesTable.get(pageForRow);
-        return page.getRowContents(id);
-    }
-}
-
-
-
-
-
-

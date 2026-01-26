@@ -1,4 +1,5 @@
 import DatabaseExceptions.InvalidStatementException;
+import Format.Row;
 
 class Tokenizer {
      public static Statement prepareStatement(String token) throws InvalidStatementException {
@@ -30,6 +31,12 @@ class Tokenizer {
          } catch (ArrayIndexOutOfBoundsException | NumberFormatException e){
              throw new InvalidStatementException();
          }
+
+         return row;
+     }
+
+     public static Row selectRowStatement(String token) throws InvalidStatementException {
+         Row row = null;
 
          return row;
      }
