@@ -20,6 +20,35 @@ public class Table implements Serializable {
         pagesTable = new ArrayList<>();
     }
 
+    public ArrayList<Page> getTable(){
+        return pagesTable;
+    }
+
+    public boolean getTableFile() throws IOException {
+        FileReader fileReader = null;
+
+        try{
+            fileReader = new FileReader(tableName + "/meta.txt");
+            // Eventually can add some meta contents for more complex and unique tables. But for now only acts to check if file found
+        } catch (FileNotFoundException e){
+            return false;
+        } finally {
+            if (fileReader != null) fileReader.close();
+        }
+        return true;
+    }
+
+    /**
+     Makes the directory along with the number of pages set by the table
+     **/
+
+    public boolean createTable() {
+        for (int i = 0; i < TABLE_SIZE; ++i)
+            pagesTable.add(new Page());
+
+        return new File(tableName).mkdir();
+    }
+
     /*
         We recieve a string, token, that includes the select 50
 
@@ -29,14 +58,15 @@ public class Table implements Serializable {
         we need to check if it's an email (includes @, using a for loop), or if it's a username (includes no @).
 
         Need to select the page if it's an id, or loop through all pages if it's a string. We are going to print out the rows
-
     */
 
     public ArrayList<Row> getRowSingleSelect(String[] contents, Table table) throws InvalidStatementException {
         ArrayList<Page> pagesTable = table.getTable();
         ArrayList<Row> rowList = new ArrayList<>();
 
-        try{
+        Row row = new Row(null, null, null);
+
+        try {
             Integer id = Integer.parseInt(contents[1]);
             Integer pageForRow = (int) floor((double) id / 10);
 
@@ -50,39 +80,72 @@ public class Table implements Serializable {
 
             for (char c : listOfCharacters) {
                 if (c == '@')
-                    containsEmail = true;
+                    row.setEmail(contents[1]); // .select template1o@shaw.ca
             }
+            row.setUsername(contents[2]); // .select template2o@shaw.ca
 
-            Page page = pagesTable.getFirst();
+            Page page;
+            for (int i = 0; i < Table.TABLE_SIZE; ++i) {
+                page = pagesTable.get(i);
+
+                for (int j = 0; j < Table.PAGE_SIZE; ++j) {
+                    Row row2 = page.getRowContents(j);
+
+                    if (row.compareTo(row2) == 0)
+                        rowList.add(row2);
+                }
+            }
+        }
+        return rowList;
+    }
+
+    /*
+        First need to get the contents of the string, and then use my own unique comparator to compare the contents.
+        So if I got .select david david1o@shaw.ca. I need to compare all rows and then select the row depending on
+        the contents of the comparator.
+
+        .select david david1o@shaw.ca
+        .select 40 david1o@shaw.ca
+    */
+
+    public ArrayList<Row> getRowMultiSelect(String[] contents, Table table) throws InvalidStatementException{
+        Row row = new Row(null, null, null);
+        ArrayList<Row> rowList = new ArrayList<>();
+        Page page;
+
+        ArrayList<Page> pagesTable = table.getTable();
+
+        try { // .select 40 david1o@shaw.ca. Will just return the value with the id
+            Integer id = Integer.parseInt(contents[1]);
+            Integer pageForRow = (int) floor((double) id / 10);
+
+            page = pagesTable.get(pageForRow);
+            rowList.add(page.getRowContents(id));
+
+        } catch(NumberFormatException e){ //name always comes before email
+            row.setUsername(contents[1]);
+            row.setEmail(contents[2]);
 
             for (int i = 0; i < Table.TABLE_SIZE; ++i) {
                 page = pagesTable.get(i);
 
                 for (int j = 0; j < Table.PAGE_SIZE; ++j) {
-                    Row row = page.getRowContents(j);
+                    Row row2 = page.getRowContents(j);
 
-                    if (containsEmail)
-                        if (row.getEmail().equals(contents[1]))
-                            rowList.add(row);
-                        else if (row.getUser().equals(contents[1]))
-                            rowList.add(row);
+                    if (row.compareTo(row2) == 0)
+                        rowList.add(row2);
                 }
             }
-        } finally{
-            return rowList;
         }
-    }
-
-    public ArrayList<Row> getRowMultiSelect(String[] contents, Table table) throws InvalidStatementException{
-        ArrayList<Row> rowList = new ArrayList<>();
         return rowList;
     }
 
+
+    // .select 40 -> need to print out the row
     public void getRowContents(String token, Table table) throws InvalidStatementException {
         Row row = new Row(null, null, null);
-        String[] splitList = token.split(" ");
+        String[] splitList = token.split(" "); // Token will have .select 40 david1o
         ArrayList<Row> rowList;
-
 
         if (splitList.length > 2){
             rowList = getRowSingleSelect(splitList, table);
@@ -104,34 +167,5 @@ public class Table implements Serializable {
         } finally {
             if (fileWriter != null) fileWriter.close();
         }
-    }
-
-    public ArrayList<Page> getTable(){
-        return pagesTable;
-    }
-
-    public boolean getTableFile() throws IOException {
-        FileReader fileReader = null;
-
-        try{
-            fileReader = new FileReader(tableName + "/meta.txt");
-            // Eventually can add some meta contents for more complex and unique tables. But for now only acts to check if file found
-        } catch (FileNotFoundException e){
-            return false;
-        } finally {
-            if (fileReader != null) fileReader.close();
-        }
-        return true;
-    }
-
-     /**
-     Makes the directory along with the number of pages set by the table
-     **/
-
-    public boolean createTable() {
-        for (int i = 0; i < TABLE_SIZE; ++i)
-            pagesTable.add(new Page());
-
-        return new File(tableName).mkdir();
     }
 }
