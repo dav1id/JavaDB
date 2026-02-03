@@ -54,7 +54,7 @@ public class Row implements Serializable, Comparable<Row> {
         return id.compareTo(row2.id);
     }
 
-    public String toString(){
+    public String toString() throws NullPointerException{
         return id.toString() +" " + username + " " + email;
     }
 }

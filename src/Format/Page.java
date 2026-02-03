@@ -20,12 +20,13 @@ public class Page implements Serializable {
      @return Row
      */
 
-    public Row getRowContents(Integer id) throws InvalidStatementException {
+    public Row getRowContents(Integer id){
 
         if (rows.containsKey(id)){
             return rows.getOrDefault(id, null);
         } else {
-            throw new InvalidStatementException("Unable to get contents of Row");
+         //   throw new InvalidStatementException("Unable to get contents of Row");
+            return null;
         }
     }
 

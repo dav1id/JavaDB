@@ -63,7 +63,7 @@ public class Table implements Serializable {
 
     public ArrayList<Row> rowComparison(Row row, ArrayList<Row> rowList) throws InvalidStatementException{
         Page page;
-        for (int i = 0; i < Table.TABLE_SIZE; ++i) {
+        for (int i = 0; i < Table.TABLE_SIZE; ++i) { //Learn a way to go through this quicker
             page = pagesTable.get(i);
 
             for (int j = 0; j < Table.PAGE_SIZE; ++j) {
@@ -98,7 +98,8 @@ public class Table implements Serializable {
                 if (c == '@')
                     row.setEmail(contents[1]); // .select template1o@shaw.ca
             }
-            row.setUsername(contents[2]); // .select template2o@shaw.ca
+
+            row.setUsername(contents[1]); // .select template2o@shaw.ca
             rowList = rowComparison(row, rowList);
         }
         return rowList;
