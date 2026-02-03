@@ -60,6 +60,22 @@ public class Table implements Serializable {
         Need to select the page if it's an id, or loop through all pages if it's a string. We are going to print out the rows
     */
 
+
+    public ArrayList<Row> rowComparison(Row row, ArrayList<Row> rowList) throws InvalidStatementException{
+        Page page;
+        for (int i = 0; i < Table.TABLE_SIZE; ++i) {
+            page = pagesTable.get(i);
+
+            for (int j = 0; j < Table.PAGE_SIZE; ++j) {
+                Row row2 = page.getRowContents(j);
+
+                if (row.compareTo(row2) == 0)
+                    rowList.add(row2);
+            }
+        }
+
+        return rowList;
+    };
     public ArrayList<Row> getRowSingleSelect(String[] contents, Table table) throws InvalidStatementException {
         ArrayList<Page> pagesTable = table.getTable();
         ArrayList<Row> rowList = new ArrayList<>();
@@ -68,7 +84,7 @@ public class Table implements Serializable {
 
         try {
             Integer id = Integer.parseInt(contents[1]);
-            Integer pageForRow = (int) floor((double) id / 10);
+            int pageForRow = (int) floor((double) id / 10);
 
             Page page = pagesTable.get(pageForRow);
             rowList.add(page.getRowContents(id));
@@ -83,18 +99,7 @@ public class Table implements Serializable {
                     row.setEmail(contents[1]); // .select template1o@shaw.ca
             }
             row.setUsername(contents[2]); // .select template2o@shaw.ca
-
-            Page page;
-            for (int i = 0; i < Table.TABLE_SIZE; ++i) {
-                page = pagesTable.get(i);
-
-                for (int j = 0; j < Table.PAGE_SIZE; ++j) {
-                    Row row2 = page.getRowContents(j);
-
-                    if (row.compareTo(row2) == 0)
-                        rowList.add(row2);
-                }
-            }
+            rowList = rowComparison(row, rowList);
         }
         return rowList;
     }
@@ -125,42 +130,30 @@ public class Table implements Serializable {
         } catch(NumberFormatException e){ //name always comes before email
             row.setUsername(contents[1]);
             row.setEmail(contents[2]);
+            rowList = rowComparison(row, rowList);
 
-            for (int i = 0; i < Table.TABLE_SIZE; ++i) {
-                page = pagesTable.get(i);
-
-                for (int j = 0; j < Table.PAGE_SIZE; ++j) {
-                    Row row2 = page.getRowContents(j);
-
-                    if (row.compareTo(row2) == 0)
-                        rowList.add(row2);
-                }
-            }
         }
         return rowList;
     }
 
 
-    // .select 40 -> need to print out the row
-    public void getRowContents(String token, Table table) throws InvalidStatementException {
-        Row row = new Row(null, null, null);
-        String[] splitList = token.split(" "); // Token will have .select 40 david1o
+    public ArrayList<Row> getRowContents(String token, Table table) throws InvalidStatementException {
+        String[] splitList = token.split(" ");
         ArrayList<Row> rowList;
 
-        if (splitList.length > 2){
+        if (splitList.length == 2){ // .select 40, or .select david, or .select david1o@shaw.ca
             rowList = getRowSingleSelect(splitList, table);
-            System.out.println(rowList);
 
         } else {
             rowList = getRowMultiSelect(splitList, table);
         }
 
-        System.out.println(rowList);
+        return rowList;
     }
 
     public void createMetaText() throws IOException {
         FileWriter fileWriter = null;
-        try{
+        try {
             fileWriter = new FileWriter(tableName + "/meta.txt");
             fileWriter.write(tableName);
 

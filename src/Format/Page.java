@@ -25,7 +25,7 @@ public class Page implements Serializable {
         if (rows.containsKey(id)){
             return rows.getOrDefault(id, null);
         } else {
-            throw new InvalidStatementException();
+            throw new InvalidStatementException("Unable to get contents of Row");
         }
     }
 

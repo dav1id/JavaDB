@@ -32,9 +32,10 @@ class vm {
         @return Row Simple dataset of id, email, and username
      **/
 
-    static <T> Row executeSelect(String token, Table table) throws InvalidStatementException {
-        Row row = new Row(null, null, null);
-        return row;
+    static void executeSelect(String token, Table table) throws InvalidStatementException {
+        ArrayList<Row> rowList = table.getRowContents(token, table);
+        for (Row row : rowList)
+            System.out.println(row);
     }
 }
 

@@ -13,8 +13,7 @@ class Parser {
                 break;
 
             case SELECT_STATEMENT:
-                Row selectedRow = vm.executeSelect(token, table);
-                System.out.println(selectedRow);
+                vm.executeSelect(token, table);
                 break;
         }
     }

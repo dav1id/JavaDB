@@ -1,5 +1,4 @@
 import DatabaseExceptions.InvalidStatementException;
-
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -60,7 +59,6 @@ public class Main {
                 c = inputScanner.nextLine();
 
                 if (c.equals(".exit")) {
-             //       Pager.serialize_pages(table);
                     break;
                 }
 
@@ -70,7 +68,7 @@ public class Main {
                     input_buffer.setBufferInput(c);
 
                 } catch (InvalidStatementException e){
-                    System.out.println(String.format("Invalid Statement: %s", c));
+                    System.out.println(String.format("Invalid Statement: %s", e.getMessage()));
                 }
             }
 

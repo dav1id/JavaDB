@@ -3,7 +3,6 @@ package Format;
 import DatabaseExceptions.InvalidStatementException;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 import static java.lang.Math.floor;
 
@@ -18,10 +17,14 @@ public class Row implements Serializable, Comparable<Row> {
         this.email = email;
         this.id = id;
 
-        page = (int) floor(id / 10);
+        if (id == null){
+            page = 0;
+        } else {
+            page = (int) floor(id / 10);
 
-        if (page > Table.TABLE_SIZE)
-            throw new InvalidStatementException(); // create a unique exception here too
+            if (page > Table.TABLE_SIZE)
+                throw new InvalidStatementException("Index out of range");
+        }
     }
 
     public String getEmail(){
@@ -49,5 +52,9 @@ public class Row implements Serializable, Comparable<Row> {
 
 
         return id.compareTo(row2.id);
+    }
+
+    public String toString(){
+        return id.toString() +" " + username + " " + email;
     }
 }

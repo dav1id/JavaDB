@@ -16,7 +16,7 @@ class Tokenizer {
                  }
              }
 
-        throw new InvalidStatementException();
+        throw new InvalidStatementException("Unknown identifier");
      }
 
      public static Row prepareRowInsertStatement(String token) throws InvalidStatementException {
@@ -29,15 +29,10 @@ class Tokenizer {
 
              row = new Row(Integer.valueOf(splitList[1]), splitList[2], splitList[3]);
          } catch (ArrayIndexOutOfBoundsException | NumberFormatException e){
-             throw new InvalidStatementException();
+             throw new InvalidStatementException("Cannot parse into a row");
          }
 
          return row;
      }
 
-     public static Row selectRowStatement(String token) throws InvalidStatementException {
-         Row row = null;
-
-         return row;
-     }
 }
