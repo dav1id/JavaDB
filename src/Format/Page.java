@@ -3,7 +3,9 @@ package Format;
 import DatabaseExceptions.InvalidStatementException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Page implements Serializable {
     private final HashMap<Integer, Row> rows;// 10 rows
@@ -19,6 +21,17 @@ public class Page implements Serializable {
      @param id The id that is used to get or set the contents inside the Page's hashmap
      @return Row
      */
+
+    public ArrayList<Row> getContentsOfRows(){
+        Set<Integer> keySets = rows.keySet();
+        ArrayList<Row> rowList = new ArrayList<>();
+
+        for (Integer key : keySets)
+            rowList.add(getRowContents(key));
+
+
+        return rowList;
+    }
 
     public Row getRowContents(Integer id){
 

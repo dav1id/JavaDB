@@ -35,26 +35,29 @@ public class Row implements Serializable, Comparable<Row> {
     }
 
     public void setEmail(String email){this.email = email;}
+
     public void setUsername(String username){this.username = username;}
 
     public int compareTo(Row row2){
         int c = 0;
-        if (row2.id == null)
-            if (row2.getEmail() == null & row2.getUsername() != null)
-                return username.compareTo(row2.getUsername());
-            else if (row2.getEmail() != null & row2.getUsername() == null)
-                return this.getEmail().compareTo(row2.getEmail());
-            else
-                c = email.compareTo(row2.getEmail());
+
+        if (getEmail() == null & getUsername() != null)
+            return username.compareTo(row2.getUsername());
+        else if (getEmail() != null & getUsername() == null)
+            return getEmail().compareTo(row2.getEmail());
+        else
+            c = email.compareTo(row2.getEmail());
 
         if (c == 0)
             return username.compareTo(row2.getUsername());
-
-
         return id.compareTo(row2.id);
     }
 
-    public String toString() throws NullPointerException{
-        return id.toString() +" " + username + " " + email;
+    public String toString(){
+        try {
+            return id.toString() + " " + username + " " + email;
+        } catch(NullPointerException e){
+            return null;
+        }
     }
 }

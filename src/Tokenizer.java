@@ -2,7 +2,8 @@ import DatabaseExceptions.InvalidStatementException;
 import Format.Row;
 
 class Tokenizer {
-     public static Statement prepareStatement(String token) throws InvalidStatementException {
+    // IndexOutOfBoundsException, might be exceeding the amount of characters for string
+     public static Statement prepareStatement(String token) throws InvalidStatementException, IndexOutOfBoundsException {
          String[] splitList = token.split(" ");
          String removedLexeme = splitList[0].substring(1);
 

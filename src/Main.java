@@ -17,14 +17,13 @@ enum Statement{
         }
     },
 
-    FAILURE_STATEMENT {
+    DELETE_STATEMENT{
         public String toString(){
-            return "Statement tokenization has failed";
+            return "delete";
         }
     };
 
     public abstract String toString();
-
 }
 
 public class Main {

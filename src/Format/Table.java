@@ -3,7 +3,9 @@ package Format;
 import DatabaseExceptions.InvalidStatementException;
 
 import java.io.*;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Set;
 
 import static java.lang.Math.floor;
 
@@ -60,22 +62,30 @@ public class Table implements Serializable {
         Need to select the page if it's an id, or loop through all pages if it's a string. We are going to print out the rows
     */
 
-
     public ArrayList<Row> rowComparison(Row row, ArrayList<Row> rowList) throws InvalidStatementException{
         Page page;
+
         for (int i = 0; i < Table.TABLE_SIZE; ++i) { //Learn a way to go through this quicker
             page = pagesTable.get(i);
+            ArrayList<Row> contents = page.getContentsOfRows();
 
-            for (int j = 0; j < Table.PAGE_SIZE; ++j) {
-                Row row2 = page.getRowContents(j);
-
-                if (row.compareTo(row2) == 0)
-                    rowList.add(row2);
-            }
+            for (Row rowContent : contents)
+                if (row.compareTo(rowContent) == 0)
+                    rowList.add(rowContent);
         }
 
         return rowList;
-    };
+    }
+
+    public ArrayList<Row> selectAll(Table table){
+        ArrayList<Row> rowList = new ArrayList<>();
+        ArrayList<Page> pagesList = table.getTable();
+
+        for (Page page : pagesList)
+            rowList.addAll(page.getContentsOfRows());
+
+        return rowList;
+    }
     public ArrayList<Row> getRowSingleSelect(String[] contents, Table table) throws InvalidStatementException {
         ArrayList<Page> pagesTable = table.getTable();
         ArrayList<Row> rowList = new ArrayList<>();
@@ -90,9 +100,11 @@ public class Table implements Serializable {
             rowList.add(page.getRowContents(id));
 
         } catch(NumberFormatException e) {
+            if (contents[1].equals("*"))
+                return selectAll(table);
+
             char[] listOfCharacters = new char[contents[1].length()];
             contents[1].getChars(0, contents[1].length(), listOfCharacters, 0);
-            Boolean containsEmail = false;
 
             for (char c : listOfCharacters) {
                 if (c == '@')
