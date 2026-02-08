@@ -34,7 +34,6 @@ public class Page implements Serializable {
     }
 
     public Row getRowContents(Integer id){
-
         if (rows.containsKey(id)){
             return rows.getOrDefault(id, null);
         } else {
@@ -45,5 +44,15 @@ public class Page implements Serializable {
 
     public void setRowContents(Row row){
         rows.put(row.id, row);
+    }
+
+    public void deleteAllContents() {
+        rows.clear();
+    }
+    public String deleteRowById(Integer id){
+        String rowToString = rows.get(id).toString();
+        rows.remove(id);
+
+        return rowToString;
     }
 }

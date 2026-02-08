@@ -37,6 +37,10 @@ class vm {
         for (Row row : rowList)
             System.out.println(row);
     }
+
+    static void executeDelete(String token, Table table) throws InvalidStatementException {
+
+    }
 }
 
 /*

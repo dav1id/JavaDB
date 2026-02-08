@@ -1,11 +1,8 @@
 package Format;
 
 import DatabaseExceptions.InvalidStatementException;
-
 import java.io.*;
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Set;
 
 import static java.lang.Math.floor;
 
@@ -62,20 +59,6 @@ public class Table implements Serializable {
         Need to select the page if it's an id, or loop through all pages if it's a string. We are going to print out the rows
     */
 
-    public ArrayList<Row> rowComparison(Row row, ArrayList<Row> rowList) throws InvalidStatementException{
-        Page page;
-
-        for (int i = 0; i < Table.TABLE_SIZE; ++i) { //Learn a way to go through this quicker
-            page = pagesTable.get(i);
-            ArrayList<Row> contents = page.getContentsOfRows();
-
-            for (Row rowContent : contents)
-                if (row.compareTo(rowContent) == 0)
-                    rowList.add(rowContent);
-        }
-
-        return rowList;
-    }
 
     public ArrayList<Row> selectAll(Table table){
         ArrayList<Row> rowList = new ArrayList<>();
@@ -112,19 +95,10 @@ public class Table implements Serializable {
             }
 
             row.setUsername(contents[1]); // .select template2o@shaw.ca
-            rowList = rowComparison(row, rowList);
+            rowList = Row.rowComparison(row, rowList, pagesTable);
         }
         return rowList;
     }
-
-    /*
-        First need to get the contents of the string, and then use my own unique comparator to compare the contents.
-        So if I got .select david david1o@shaw.ca. I need to compare all rows and then select the row depending on
-        the contents of the comparator.
-
-        .select david david1o@shaw.ca
-        .select 40 david1o@shaw.ca
-    */
 
     public ArrayList<Row> getRowMultiSelect(String[] contents, Table table) throws InvalidStatementException{
         Row row = new Row(null, null, null);
@@ -135,20 +109,19 @@ public class Table implements Serializable {
 
         try { // .select 40 david1o@shaw.ca. Will just return the value with the id
             Integer id = Integer.parseInt(contents[1]);
-            Integer pageForRow = (int) floor((double) id / 10);
+         //   Integer pageForRow = (int) floor((double) id / 10);
 
-            page = pagesTable.get(pageForRow);
+            page = pagesTable.get(Row.pageForRow(id));
             rowList.add(page.getRowContents(id));
 
         } catch(NumberFormatException e){ //name always comes before email
             row.setUsername(contents[1]);
             row.setEmail(contents[2]);
-            rowList = rowComparison(row, rowList);
+            rowList = Row.rowComparison(row, rowList, pagesTable);
 
         }
         return rowList;
     }
-
 
     public ArrayList<Row> getRowContents(String token, Table table) throws InvalidStatementException {
         String[] splitList = token.split(" ");
@@ -173,5 +146,11 @@ public class Table implements Serializable {
         } finally {
             if (fileWriter != null) fileWriter.close();
         }
+    }
+
+    public void deleteTable(){
+        for (Page page : pagesTable)
+            page.deleteAllContents();
+        System.out.println("Deleted all contents in this table");
     }
 }

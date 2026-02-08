@@ -3,6 +3,7 @@ package Format;
 import DatabaseExceptions.InvalidStatementException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import static java.lang.Math.floor;
 
@@ -59,5 +60,25 @@ public class Row implements Serializable, Comparable<Row> {
         } catch(NullPointerException e){
             return null;
         }
+    }
+
+    // Static methods
+    public static ArrayList<Row> rowComparison(Row row, ArrayList<Row> rowList, ArrayList<Page> pagesTable) throws InvalidStatementException{
+        Page page;
+
+        for (int i = 0; i < Table.TABLE_SIZE; ++i) { //Learn a way to go through this quicker
+            page = pagesTable.get(i);
+            ArrayList<Row> contents = page.getContentsOfRows();
+
+            for (Row rowContent : contents)
+                if (row.compareTo(rowContent) == 0)
+                    rowList.add(rowContent);
+        }
+
+        return rowList;
+    }
+
+    public static Integer pageForRow(Integer id){
+        return (int) floor((double) id / 10);
     }
 }
