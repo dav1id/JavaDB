@@ -15,6 +15,10 @@ class Parser {
             case SELECT_STATEMENT:
                 vm.executeSelect(token, table);
                 break;
+            case DELETE_STATEMENT:
+                vm.executeDelete(token, table);
+                break;
+
         }
     }
 }

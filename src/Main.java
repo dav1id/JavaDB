@@ -67,11 +67,11 @@ public class Main {
                     input_buffer.setBufferInput(c);
 
                 } catch (InvalidStatementException e){
-                    System.out.println(String.format("Invalid Statement: %s", e.getMessage()));
+                    System.out.printf("Invalid Statement: %s", e.getMessage());
                 }
             }
 
-            System.out.println(String.format("Exited out of database"));
+            System.out.printf("Exited out of database");
         } finally {
             if (inputScanner != null)
                 inputScanner.close();

@@ -33,13 +33,23 @@ class vm {
      **/
 
     static void executeSelect(String token, Table table) throws InvalidStatementException {
-        ArrayList<Row> rowList = table.getRowContents(token, table);
+        SelectRow slctCreate = new SelectRow();
+        ArrayList<Row> rowList = slctCreate.getRowContents(token, table);
         for (Row row : rowList)
             System.out.println(row);
     }
 
     static void executeDelete(String token, Table table) throws InvalidStatementException {
+        DeleteRow dltCreate = new DeleteRow();
+        ArrayList<String> deletedRows = dltCreate.deleteRow(token, table);
 
+        try {
+            System.out.println("Deleting rows: ");
+            for (String row : deletedRows)
+                System.out.println(row);
+        } catch (NullPointerException e){
+            System.out.println("Voiding delete ");
+        }
     }
 }
 

@@ -49,10 +49,15 @@ public class Page implements Serializable {
     public void deleteAllContents() {
         rows.clear();
     }
-    public String deleteRowById(Integer id){
-        String rowToString = rows.get(id).toString();
-        rows.remove(id);
+    public String deleteRowById(Integer id) throws InvalidStatementException {
+        if (rows.containsKey(id)){
+            String rowToString = rows.get(id).toString();
+            rows.remove(id);
 
-        return rowToString;
+            return rowToString;
+        } else {
+            throw new InvalidStatementException("Nothing exists in this row");
+        }
+
     }
 }

@@ -6,7 +6,7 @@ import Format.Table;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class delete {
+public class DeleteRow {
     /*
         Delete can delete a row by id, or can delete multiple rows by their name or email.
         Deleting by name or email is going to ask the user for verification on if they really want to remove the
@@ -50,26 +50,39 @@ public class delete {
                 isEmail = true;
         }
 
+        String printStatement;
         if (isEmail){
             row.setEmail(string);
+            printStatement = "Are you sure you want to delete rows with email: %s%n";
+
         } else {
             row.setEmail(string);
+            printStatement = "Are you sure you want to delete rows with username: %s%n";
+
         }
 
-        ArrayList<Row> rowList = new ArrayList<>();
-        rowList = Row.rowComparison(row, rowList, pagesTable);
+        System.out.printf(printStatement, string);
+        String response = responseInput();
 
-        Page page;
-        Integer pageForRow = 0;
-        for (Row tempRow : rowList){
-            pageForRow = Row.pageForRow(tempRow.id);
-            page = pagesTable.get(pageForRow);
+        if (response.equals("Y")){
+            ArrayList<Row> rowList = new ArrayList<>();
+            rowList = Row.rowComparison(row, rowList, pagesTable);
 
-            rowsAsStrings.add(tempRow.toString());
-            page.deleteRowById(tempRow.id);
+            Page page;
+            Integer pageForRow = 0;
+
+            for (Row tempRow : rowList){
+                pageForRow = Row.pageForRow(tempRow.id);
+                page = pagesTable.get(pageForRow);
+
+                rowsAsStrings.add(tempRow.toString());
+                page.deleteRowById(tempRow.id);
+            }
+
+            return rowsAsStrings;
+        }else {
+            return null;
         }
-
-        return rowsAsStrings;
     }
 
     public ArrayList<String> deleteRow(String token, Table table) throws InvalidStatementException {
@@ -95,12 +108,11 @@ public class delete {
 
                 if (input.equals("Y"))
                     table.deleteTable();
-                return null; // might look into seperating main into another function, so I can call that function to restart the whole process again
+                return null; // might look into separating main into another function, so I can call that function to restart the whole process again
             }
 
             deletedRows = deleteByString(contents[1], table);
         }
-
         return deletedRows;
     }
 }
