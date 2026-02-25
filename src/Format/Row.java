@@ -62,7 +62,16 @@ public class Row implements Serializable, Comparable<Row> {
         }
     }
 
-    // Static methods
+    /**
+     Compares all existing rows and returns the rows that match. In the logic used with comparisons, a temporary row is
+     created that has a null-value assigned to the username or email.
+
+     @param row Simple dataset of id, email, and username
+     @param rowList ArrayList of type Row
+     @param pagesTable Pointer to the table's array of Pages
+     @return ArrayList<Row>
+     **/
+
     public static ArrayList<Row> rowComparison(Row row, ArrayList<Row> rowList, ArrayList<Page> pagesTable) throws InvalidStatementException{
         Page page;
 

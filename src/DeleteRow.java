@@ -3,8 +3,8 @@ import Format.Page;
 import Format.Row;
 import Format.Table;
 
+import java.io.Console;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class DeleteRow {
     /*
@@ -13,27 +13,16 @@ public class DeleteRow {
         row
 
     */
-    public String responseInput(){
-        Scanner inputScanner = null;
 
-        try {
-            inputScanner = new Scanner(System.in);
+    /**
+     Verifies the user is trying to delete contetns of the database by email or username. Sets the value of username to be null,
+     and the value of email to be a value, if the user tries to delete by email, and vice-versa.
 
-            String c = "";
-            while (inputScanner.hasNext()){
-                c = inputScanner.next();
+     Calls the row comparison to compare rows having the same username, email, or id. Returns a string array list of deleted rows.
 
-                if (c.equals("Y") ||  c.equals("N"))
-                    return c;
-            }
-
-            System.out.println("Invalid Statement: Type either Y or N");
-            return responseInput();
-
-        } finally{
-            if (inputScanner != null) inputScanner.close();
-        }
-    }
+     @param string User input as a string... ".delete 1 joe joedoe@gmail.com
+     @param table Collection of Pages
+     **/
 
     public ArrayList<String> deleteByString(String string, Table table) throws InvalidStatementException {
         boolean isEmail = false;
@@ -53,38 +42,40 @@ public class DeleteRow {
         String printStatement;
         if (isEmail){
             row.setEmail(string);
-            printStatement = "Are you sure you want to delete rows with email: %s%n";
+            printStatement = "Are you sure you want to delete rows with email (Y/N): ";
 
         } else {
-            row.setEmail(string);
-            printStatement = "Are you sure you want to delete rows with username: %s%n";
+            row.setUsername(string);
+            printStatement = "Are you sure you want to delete rows with username (Y/N): ";
 
         }
 
-        System.out.printf(printStatement, string);
-        String response = responseInput();
+        Console console = System.console();
+        String response = console.readLine(printStatement);
 
         if (response.equals("Y")){
             ArrayList<Row> rowList = new ArrayList<>();
             rowList = Row.rowComparison(row, rowList, pagesTable);
 
             Page page;
-            Integer pageForRow = 0;
+            Integer pageForRow;
+            if (!(rowList.isEmpty()))
+                for (Row tempRow : rowList){
+                    pageForRow = Row.pageForRow(tempRow.id);
+                    page = pagesTable.get(pageForRow);
 
-            for (Row tempRow : rowList){
-                pageForRow = Row.pageForRow(tempRow.id);
-                page = pagesTable.get(pageForRow);
+                    rowsAsStrings.add(tempRow.toString());
+                    page.deleteRowById(tempRow.id);
+                }
 
-                rowsAsStrings.add(tempRow.toString());
-                page.deleteRowById(tempRow.id);
-            }
-
-            return rowsAsStrings;
+                return rowsAsStrings;
         }else {
             return null;
         }
     }
 
+
+    // might have to close this scanner and open the scanner in main again - Saying no line found when it loops back to main
     public ArrayList<String> deleteRow(String token, Table table) throws InvalidStatementException {
         String[] contents = token.split(" ");
         ArrayList<String> deletedRows = new ArrayList<>();
@@ -98,13 +89,11 @@ public class DeleteRow {
 
             String rowToString = page.deleteRowById(id);
             deletedRows.add(rowToString);
-        } catch (NumberFormatException e){
-            Scanner inputScanner = null;
-            Boolean isEmail = false;
 
+        } catch (NumberFormatException e){
             if (contents[1].equals("*")){
-                System.out.println("Are you sure you want to delete this database?");
-                String input = responseInput();
+                Console console = System.console();
+                String input = console.readLine("Are you sure you want to delete this database? ");
 
                 if (input.equals("Y"))
                     table.deleteTable();
