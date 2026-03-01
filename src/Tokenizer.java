@@ -2,7 +2,14 @@ import DatabaseExceptions.InvalidStatementException;
 import Format.Row;
 
 class Tokenizer {
-    // IndexOutOfBoundsException, might be exceeding the amount of characters for string
+    /**
+        First step after user input, throws an InvalidStatementException if the '.' isn't the prefix. Splits the list
+        into each of its words, and loops through the enum statements to see if the first word from user input matches
+        the statement. It returns the statement if there's a match.
+
+        @param token User input as a string
+        @return Statement One of the enum statements. Either select, delete, or insert
+    **/
      public static Statement prepareStatement(String token) throws InvalidStatementException, IndexOutOfBoundsException {
          String[] splitList = token.split(" ");
          String removedLexeme = splitList[0].substring(1);

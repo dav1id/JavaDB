@@ -7,6 +7,7 @@ import java.io.Console;
 import java.util.ArrayList;
 
 public class DeleteRow {
+
     /**
      Verifies the user is trying to delete contetns of the database by email or username. Sets the value of username to be null,
      and the value of email to be a value, if the user tries to delete by email, and vice-versa.
@@ -16,7 +17,6 @@ public class DeleteRow {
      @param string User input as a string... ".delete 1 joe joedoe@gmail.com
      @param table Collection of Pages
      **/
-
     public ArrayList<String> deleteByString(String string, Table table) throws InvalidStatementException {
         boolean isEmail = false;
         char[] listOfCharacters = new char[string.length()];
@@ -75,9 +75,9 @@ public class DeleteRow {
         calls the method deleteRowById() in page. If by username or email, calls deleteByString() method. Also includes a way to delete
         the entire table with the command 'delete *'.
     
-    @param String Token 
-    @param Table table
-    @returns ArrayList<String>
+        @param token Full command as a string, i.e ".delete 5"
+        @param table Collection of Pages
+        @return ArrayList<String>
     **/
     public ArrayList<String> deleteRow(String token, Table table) throws InvalidStatementException {
         String[] contents = token.split(" ");
@@ -100,7 +100,7 @@ public class DeleteRow {
 
                 if (input.equals("Y"))
                     table.deleteTable();
-                return null; // might look into separating main into another function, so I can call that function to restart the whole process again
+                return null;
             }
 
             deletedRows = deleteByString(contents[1], table);

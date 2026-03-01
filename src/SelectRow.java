@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import static java.lang.Math.floor;
 
 public class SelectRow {
+
+    /**
+        Select every row in table.
+        @return ArrayList<Row> ArrayList of all the rows that fit selection criteria
+     **/
     public ArrayList<Row> selectAll(Table table){
         ArrayList<Row> rowList = new ArrayList<>();
         ArrayList<Page> pagesList = table.getTable();
@@ -17,6 +22,11 @@ public class SelectRow {
 
         return rowList;
     }
+
+    /**
+
+     @return ArrayList<Row> ArrayList of all the rows that fit selection criteria
+     **/
     public ArrayList<Row> getRowSingleSelect(String[] contents, Table table) throws InvalidStatementException {
         ArrayList<Page> pagesTable = table.getTable();
         ArrayList<Row> rowList = new ArrayList<>();
@@ -48,6 +58,10 @@ public class SelectRow {
         return rowList;
     }
 
+    /**
+
+     @return ArrayList<Row> ArrayList of all the rows that fit selection criteria
+     **/
     public ArrayList<Row> getRowMultiSelect(String[] contents, Table table) throws InvalidStatementException{
         Row row = new Row(null, null, null);
         ArrayList<Row> rowList = new ArrayList<>();
@@ -71,6 +85,14 @@ public class SelectRow {
         return rowList;
     }
 
+    /**
+        Handler for the other select methods (single-select for one row parameter with select statement, or multi-select
+        for more than one row parameter).
+
+        @param token User input as a string
+        @param table Collection of pages
+        @return ArrayList<Row> ArrayList of all the rows that fit selection criteria
+     **/
     public ArrayList<Row> getRowContents(String token, Table table) throws InvalidStatementException {
         String[] splitList = token.split(" ");
         ArrayList<Row> rowList;
@@ -78,7 +100,7 @@ public class SelectRow {
         if (splitList.length == 2){ // .select 40, or .select david, or .select david1o@shaw.ca
             rowList = getRowSingleSelect(splitList, table);
 
-        } else {
+        } else { // .select 40 david, .select david davetobi@yahoo.com
             rowList = getRowMultiSelect(splitList, table);
         }
 

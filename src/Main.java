@@ -49,8 +49,8 @@ public class Main {
                 if (!table.createTable())
                     throw new IOException();
 
-                table.createMetaText(); // Need to create meta text here, and can specify late
-                Pager.serialize_pages(table); // Can call serialize_pages just to save the pages onto the table
+                table.createMetaText(); // Meta-text for possibly creating unique tables in the future
+                Pager.serialize_pages(table); // Saving the pages into memory after creating them is necessary for code function later
             }
 
             String c;

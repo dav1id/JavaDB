@@ -25,7 +25,8 @@ class vm {
     }
 
     /**
-        Simple selection by id, returns the row
+        Simple selection by id, returns the row. Methods of the select were grouped together into a class for simplicity,
+        but not best practice.
 
         @param token Entire string, including the
         @param table Collection of pages
