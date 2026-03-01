@@ -7,13 +7,6 @@ import java.io.Console;
 import java.util.ArrayList;
 
 public class DeleteRow {
-    /*
-        Delete can delete a row by id, or can delete multiple rows by their name or email.
-        Deleting by name or email is going to ask the user for verification on if they really want to remove the
-        row
-
-    */
-
     /**
      Verifies the user is trying to delete contetns of the database by email or username. Sets the value of username to be null,
      and the value of email to be a value, if the user tries to delete by email, and vice-versa.
@@ -75,7 +68,17 @@ public class DeleteRow {
     }
 
 
-    // might have to close this scanner and open the scanner in main again - Saying no line found when it loops back to main
+    /** 
+        Splits the delete command into two different methods depending on if it's deleting by id, or by username or email.
+
+        Uses a try and catch NumberFormatException block to see if delete command is deleting by id, username or email. If by id,
+        calls the method deleteRowById() in page. If by username or email, calls deleteByString() method. Also includes a way to delete
+        the entire table with the command 'delete *'.
+    
+    @param String Token 
+    @param Table table
+    @returns ArrayList<String>
+    **/
     public ArrayList<String> deleteRow(String token, Table table) throws InvalidStatementException {
         String[] contents = token.split(" ");
         ArrayList<String> deletedRows = new ArrayList<>();
